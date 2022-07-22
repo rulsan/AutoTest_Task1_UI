@@ -38,7 +38,7 @@ public class RiskDisclosureTest extends Driver {
         String SUNDAY = sunday.format(formater);
         String MONDAY = monday.format(formater);
 
-        EconomicCalendarPage economicCalendarPage = new MainPage(driver, wait)
+        EconomicCalendarPage economicCalendarPage = new MainPage(driver, wait, DIMENSION)
                 .openPage()
                 .invokeEconomicCalendarPage()
                 .switchToEconomicCalendarFrame();

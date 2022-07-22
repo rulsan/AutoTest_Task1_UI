@@ -16,16 +16,22 @@ public class MainPage extends AbstractPage{
     @FindBy(xpath = "//li[@class='main_nav_research']")
     private WebElement linkResearchAndEducation;
 
+    @FindBy(xpath = "//a[@href='#researchMenu']")
+    private WebElement linkResearchAndEducationSmall;
+
     @FindBy(xpath = "//a[contains(text(), 'Economic Calendar')]")
     private WebElement linkEconomicCalendar;
+
+    @FindBy(xpath = "//*[@id=\"researchMenu\"]/ul/li[7]/a")
+    private WebElement linkEconomicCalendarSmall;
 
     @FindBy(xpath = "//i[@class='fa fa-bars']")
     private WebElement linkMenu;
 
     private final By mainTitle = By.xpath("//span[@class='title']");
 
-    public MainPage(WebDriver driver, WebDriverWait wait){
-        super(driver, wait);
+    public MainPage(WebDriver driver, WebDriverWait wait, String dimension){
+        super(driver, wait, dimension);
         PageFactory.initElements(this.driver, this);
     }
 
@@ -43,23 +49,37 @@ public class MainPage extends AbstractPage{
         return this;
     }
 
-    public EconomicCalendarPage invokeEconomicCalendarPage(){
-        try{
-            linkMenu.click();
-            System.out.println("Menu button was pressed.");
-        } catch (Exception e){
-            System.out.println("There is no Menu button.");
-        }
+    public EconomicCalendarPage invokeEconomicCalendarPage() {
 
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//i[@class='fa fa-times']"))).click();
 
-        JavascriptExecutor js = ((JavascriptExecutor) driver);
-        js.executeScript("arguments[0].scrollIntoView();", linkResearchAndEducation);
-        wait.until(ExpectedConditions.elementToBeClickable(linkResearchAndEducation));
-        linkResearchAndEducation.click();
+        switch(DIMENSION){
+            case "small":{
+                linkMenu.click();
+                System.out.println("Menu button was pressed.");
 
-        js.executeScript("arguments[0].scrollIntoView();", linkEconomicCalendar);
-        linkEconomicCalendar.click();
+                JavascriptExecutor js = ((JavascriptExecutor) driver);
+                js.executeScript("arguments[0].scrollIntoView();", linkResearchAndEducationSmall);
+                wait.until(ExpectedConditions.elementToBeClickable(linkResearchAndEducationSmall));
+                linkResearchAndEducationSmall.click();
+
+                js.executeScript("arguments[0].scrollIntoView();", linkEconomicCalendarSmall);
+                wait.until(ExpectedConditions.elementToBeClickable(linkEconomicCalendarSmall));
+                linkEconomicCalendarSmall.click();
+                break;
+            }
+            default:{
+                System.out.println("There is no Menu button.");
+
+                JavascriptExecutor js = ((JavascriptExecutor) driver);
+                js.executeScript("arguments[0].scrollIntoView();", linkResearchAndEducation);
+                wait.until(ExpectedConditions.elementToBeClickable(linkResearchAndEducation));
+                linkResearchAndEducation.click();
+
+                js.executeScript("arguments[0].scrollIntoView();", linkEconomicCalendar);
+                linkEconomicCalendar.click();
+            }
+        }
 
         System.out.println(driver.getCurrentUrl());
         return new EconomicCalendarPage(driver, wait);
